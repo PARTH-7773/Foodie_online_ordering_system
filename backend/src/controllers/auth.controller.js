@@ -52,7 +52,7 @@ export const signUp = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error in SignUp controller",
-      data:null
+      data: null
     })
   }
 };
@@ -74,7 +74,7 @@ export const signIn = async (req, res) => {
     });
   }
   try {
-    
+
     const user = await userModel.findOne({ email }).select("+password");
     if (!user) {
       return res.status(404).json({
@@ -94,7 +94,15 @@ export const signIn = async (req, res) => {
       });
     }
 
-    const token = await GenerateAccessToken(user._id, user.role, res);
+    const token = await GenerateAccessToken(user._id, user.role);
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure:true,
+      sameSite:'strict',
+      maxAge: 10 * 60 * 1000 // 10m
+    })
+
 
     return res.status(200).json({
       success: true,
@@ -106,11 +114,11 @@ export const signIn = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("somethig went wrong",error.message);
-    return rest.status(500).json({
-      success:false,
-      message:"Error in SignIn controller",
-      data:null
+    console.log("somethig went wrong", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Error in SignIn controller",
+      data: null
     })
   }
 };

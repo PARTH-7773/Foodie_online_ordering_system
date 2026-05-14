@@ -11,11 +11,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      "http://127.0.0.1:5500/Food_Delivery/frontend/Food%20Delivery/index.html",
-      "http://127.0.0.1:5500",
-      "file:///E:/Development/import-with-Backend/BackEnd-project/Food_Delivery/frontend/Food%20Delivery/signin.html",
-    ],
+    origin: ["http://127.0.0.1:5501","http://localhost:5501"],
+    credentials: true
   }),
 );
 

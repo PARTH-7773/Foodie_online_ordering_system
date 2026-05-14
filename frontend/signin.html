@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Foody Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar flex between wrapper">
+            <a href="index.html" class="logo">Foodie.</a>
+        </nav>
+    </header>
+
+    <main class="signin-container">
+        <div class="form-wrapper">
+            <h2>Sign In</h2>
+            
+            <p style="color: red; text-align: center;" id="message"></p>
+
+            <form id="submit-form">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="password" id="password" name="password"
+                        placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+            <p class="form-footer">
+                Don't have an account? <a href="signup.html">Sign Up</a>
+            </p>
+        </div>
+    </main>
+    <script>
+        document.getElementById("submit-form").addEventListener("submit", async (e) => {
+            e.preventDefault()
+            const data = {
+                email: document.querySelector('.email').value,
+                password: document.querySelector('.password').value
+            };
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/signIn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials:'include',
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json()
+                console.log("user data :", result)
+                if(!result.success){
+                    document.querySelector('#message').textContent = 'No user found with that email address.';
+                    return 
+                }
+                const user = {
+                    name: result.data.name,
+                    role: result.data.role
+                }
+
+                localStorage.setItem("foodieUser", JSON.stringify(user));
+                if (result.success) {
+                    window.location.href = 'http://localhost:5501/frontend/index.html';
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+        })
+    </script>
+</body>
+
+</html>

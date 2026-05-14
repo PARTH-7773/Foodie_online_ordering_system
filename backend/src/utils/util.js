@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export const GenerateAccessToken = async (_id, role, res) => {
+export const GenerateAccessToken = async (_id, role) => {
   const Accesstoken = jwt.sign(
     {
       _id: _id,
@@ -9,6 +9,7 @@ export const GenerateAccessToken = async (_id, role, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "10m" },
   );
+  
   return Accesstoken;
 };
 
