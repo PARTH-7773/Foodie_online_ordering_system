@@ -1,3 +1,4 @@
+import config from "../config/ENV.config.js";
 import userModel from "../models/auth.model.js";
 import { GenerateAccessToken } from "../utils/util.js";
 
@@ -98,8 +99,8 @@ export const signIn = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure:true,
-      sameSite:'strict',
+      secure:config.NODE_ENV,
+      sameSite:config.NODE_ENV ? 'none':"lax",
       maxAge: 10 * 60 * 1000 // 10m
     })
 

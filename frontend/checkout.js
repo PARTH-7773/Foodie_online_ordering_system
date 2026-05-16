@@ -29,12 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                      <strong>₹${itemPrice.toFixed(2)}</strong>
                                 `;
             orderItemsList.appendChild(itemElement)
+
         });
         OrderTotalprice.textContent = `₹${totalAmount.toFixed(2)}`
 
     }
 
     form.addEventListener('submit', (e) => {
+        
         e.preventDefault()
         const name = document.querySelector('#name').value;
         const address = document.querySelector('#address').value;
@@ -44,7 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = {
             name,
             address,
-            phone: parseInt(phone)
+            phone,
+            cart
         }
 
         fetch("http://localhost:3000/api/order/place-order",{

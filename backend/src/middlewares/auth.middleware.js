@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 async function authMiddleware(req, res, next) {
 
     const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
-    console.log(token)
     if (!token) {
         return res.status(401).json({
             success: false,
@@ -24,8 +23,8 @@ async function authMiddleware(req, res, next) {
         }
 
         const user = await userModel.findById(decoded._id).select("-password")
-        // console.log(user)
-        req.user
+        console.log(user)
+        req.user = user
         next()
     } catch (error) {
         console.log("Sothing wnet wrong", error.message);

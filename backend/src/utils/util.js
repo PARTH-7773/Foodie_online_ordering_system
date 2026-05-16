@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import config from "../config/ENV.config.js";
 
 export const GenerateAccessToken = async (_id, role) => {
   const Accesstoken = jwt.sign(
@@ -6,7 +7,7 @@ export const GenerateAccessToken = async (_id, role) => {
       _id: _id,
       role: role,
     },
-    process.env.JWT_SECRET,
+    config.JWT_SECRET,
     { expiresIn: "10m" },
   );
   
@@ -17,7 +18,7 @@ export const GenerateRefreshToken = async (_id, role, res) => {
   const refreshToken = jwt.sign({
     _id:_id,
     role:role
-  },process.env.JWT_SECRET,{expiresIn:'10d'});
+  },config.JWT_SECRET,{expiresIn:'10d'});
 
   res.cookie("refreshToken", refreshToken,{
     httpOnly:true,

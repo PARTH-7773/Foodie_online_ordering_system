@@ -16,12 +16,12 @@ const orderSchema = new mongoose.Schema({
         lowercase:true
     },
     customer_phone: {
-        type: Number,
+        type: String,
         minlength:[10, 'Number must be contains 10 charactors.'],
         required:[true, 'Phone number is required for deliver order']
     },
     total_price:{
-        type:Number,
+        type:mongoose.Types.Decimal128,
         required:[true,'Price is required for order']
     }
 },{timestamps:true})
