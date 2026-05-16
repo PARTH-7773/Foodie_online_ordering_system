@@ -23,7 +23,6 @@ async function authMiddleware(req, res, next) {
         }
 
         const user = await userModel.findById(decoded._id).select("-password")
-        console.log(user)
         req.user = user
         next()
     } catch (error) {

@@ -2,7 +2,7 @@ import Order from "../models/order.model.js";
 import OrderItem from "../models/order_item.model.js";
 export const createOrder = async ({ userId, name, address, phone, cart }) => {
     try {
-        console.log(`user id ${cart}`);
+        // console.log(`user id ${cart}`);
         if (!userId|| !name || !address || !phone || !cart) {
             throw new Error("All fields are required");
         }

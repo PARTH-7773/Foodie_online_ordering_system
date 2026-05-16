@@ -1,13 +1,21 @@
 import config from "../config/ENV.config.js";
 import userModel from "../models/auth.model.js";
 import { GenerateAccessToken } from "../utils/util.js";
-
+import { validationResult } from "express-validator";
 /**
  * @route - POST api/auth/signUp
  * @description - User registration controller
  * @access public
  */
 export const signUp = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+      data: null
+    });
+  }
   const { name, email, password, conformPassword } = req.body;
 
   if (!name || !email || !password || !conformPassword) {
@@ -65,6 +73,15 @@ export const signUp = async (req, res) => {
  */
 
 export const signIn = async (req, res) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+      data: null
+    });
+  }
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -99,8 +116,8 @@ export const signIn = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure:config.NODE_ENV,
-      sameSite:config.NODE_ENV ? 'none':"lax",
+      secure: config.NODE_ENV,
+      sameSite: config.NODE_ENV ? 'none' : "lax",
       maxAge: 10 * 60 * 1000 // 10m
     })
 
