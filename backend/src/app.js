@@ -11,13 +11,16 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5500","http://localhost:5501"],
+    origin: ['http://localhost:5500',
+      'http://localhost:5501',
+      'http://127.0.0.1:5500',
+      'http://127.0.0.1:5501'],
     credentials: true
   }),
 );
 
 app.use("/api/auth", router);
-app.use("/api/product/", productRouter)
+app.use("/api/product", productRouter)
 app.use("/api/order", orderRouter)
 
 

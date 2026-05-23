@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import { stringify } from "uuid";
+
 
 const userSchema = new mongoose.Schema(
   {

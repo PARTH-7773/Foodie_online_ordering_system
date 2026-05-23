@@ -18,7 +18,7 @@
     <main class="signin-container">
         <div class="form-wrapper">
             <h2>Sign In</h2>
-            
+
             <p style="color: red; text-align: center;" id="message"></p>
 
             <form id="submit-form">
@@ -38,42 +38,8 @@
             </p>
         </div>
     </main>
-    <script>
-        document.getElementById("submit-form").addEventListener("submit", async (e) => {
-            e.preventDefault()
-            const data = {
-                email: document.querySelector('.email').value,
-                password: document.querySelector('.password').value
-            };
-            try {
-                const response = await fetch('http://localhost:3000/api/auth/signIn', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials:'include',
-                    body: JSON.stringify(data)
-                });
 
-                const result = await response.json()
-                console.log("user data :", result)
-                if(!result.success){
-                    document.querySelector('#message').textContent = 'No user found with that email address.';
-                    return 
-                }
-                const user = {
-                    name: result.data.name,
-                    role: result.data.role
-                }
-
-                localStorage.setItem("foodieUser", JSON.stringify(user));
-                if (result.success) {
-                    window.location.href = 'http://localhost:5500/frontend/index.html';
-                }
-            } catch (error) {
-                console.log(error)
-            }
-
-        })
-    </script>
 </body>
+<script type="module" src="./assets/scripts/signIn.js"></script>
 
 </html>

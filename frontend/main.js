@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- SELECT ELEMENTS ---
@@ -12,7 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartList = document.querySelector(".cart-list");
     const cartTotal = document.querySelector(".cart-total");
     const cartValue = document.querySelector(".cart-value");
-
+    const stateBtn = document.querySelector("#stateBtn");
+    const desktopAction = document.querySelector(".desktop-action");
+    const userDropdown = document.querySelector(".user-dropdown")
     // --- STATE MANAGEMENT ---
     let cart = [];
     let productList = []
@@ -26,8 +26,55 @@ document.addEventListener('DOMContentLoaded', () => {
     //     },
     // });
 
-    // --- EVENT LISTENERS ---
+    const logout = async () => {
+        const response = await fetch("http://localhost:7773/api/auth/sign-out", {
+            credentials: "include"
+        }).then(res => res.json()).then((data) => {
+            console.log(data);
+            if (data.success) {
+                localStorage.removeItem('foodieUser');
+                window.location.href = 'http://localhost:5500/frontend/index.html';
+            } else {
+                localStorage.removeItem('foodieUser');
+                window.location.href = 'http://localhost:5500/frontend/index.html';
+            }
+        })
 
+    }
+
+    // --- EVENT LISTENERS ---
+    let UserState = JSON.parse(localStorage.getItem("foodieUser"));
+    if (UserState) {
+        if (UserState.state) {
+            desktopAction.removeChild(stateBtn)
+            // stateBtn.textContent = "Sign Out"
+            // stateBtn.href = ""
+            let div = document.createElement('div');
+            div.classList.add('user-dropdown')
+            div.innerHTML = `
+                    <button class="btn dropdown-btn">
+                        <i class="fa-solid fa-user"></i>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
+
+                    <div class="dropdown-content">
+                        <a href="profile.php">
+                            <i class="fa-solid fa-id-card"></i> Profile
+                        </a>
+                        <a href="my_orders.html">
+                            <i class="fa-solid fa-box-open"></i> My Orders
+                        </a>
+                        <a href="my_wishlist.php">
+                            <i class="fa-solid fa-bars"></i>My Wishlist
+                        </a>
+                        <a href="#" class="logout-link">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </a>
+                    </div>`
+            desktopAction.appendChild(div)
+            div.querySelector('.logout-link').addEventListener('click', logout)
+        } "Sign In"
+    }
     if (hamburger) {
         hamburger.addEventListener("click", () => {
             mobileMenu.classList.toggle("mobile-menu-active");
@@ -47,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const initApp = () => {
-        fetch("http://localhost:3000/api/product/get-all-products")
+        fetch("http://localhost:7773/api/product/get-all-products")
             .then((response) => response.json())
             .then((data) => {
                 // console.log(data)
@@ -61,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch((error) => console.error("Error fetching products:", error));
     };
-
     const displayProducts = (items) => {
         cardList.innerHTML = "";
         if (items.length === 0) {
@@ -84,14 +130,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <h4 class="price">$${product.price.toFixed(2)}</h4>
             <div class="button-group">
                 <button class="btn card-btn" onclick="addToCart('${product._id}')">Add to Cart</button>
-                <a href="checkout.html" class="btn buy-btn">Buy Now</a>
+                ${UserState ? `${UserState.state ? `<a href="checkout.html" class="btn buy-btn">Buy Now</a>` : ""}` : ""}
             </div>
         `;
             cardList.appendChild(orderCard);
-
-            orderCard.querySelector(".buy-btn").addEventListener('click', (e) => {
-                buyProduct(product._id)
-            })
+            if (orderCard.querySelector(".buy-btn")) {
+                orderCard.querySelector(".buy-btn").addEventListener('click', (e) => {
+                    buyProduct(product._id)
+                })
+            }
         });
     }
     function buyProduct(id) {
@@ -160,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             (sum, item) => sum + item.price * item.quantity,
             0
         );
-        console.log("total", total)
+        // console.log("total", total)
         cartTotal.innerText = "₹" + total.toFixed(2);
         cartValue.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
     };

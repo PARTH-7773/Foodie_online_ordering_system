@@ -8,6 +8,7 @@ import { validationResult } from "express-validator";
  * @access public
  */
 export const signUp = async (req, res) => {
+  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -17,7 +18,6 @@ export const signUp = async (req, res) => {
     });
   }
   const { name, email, password, conformPassword } = req.body;
-
   if (!name || !email || !password || !conformPassword) {
     return res.status(400).json({
       success: false,
@@ -25,11 +25,18 @@ export const signUp = async (req, res) => {
       data: null,
     });
   }
+  if (password !== conformPassword) {
+      return res.status(400).json({
+        success:false,
+        message:"Password are not Match.",
+        data:null
+      })
+  }
   try {
 
     const userAlreadyExist = await userModel.findOne({ email });
     if (userAlreadyExist) {
-      return res.status(403).json({
+      return res.status(408).json({
         success: false,
         message: "User already have this email.",
         data: null,
@@ -126,6 +133,7 @@ export const signIn = async (req, res) => {
       success: true,
       message: "SignIn success",
       data: {
+        _id:user._id,
         name: user.name,
         email: user.email,
         role: user.role,
