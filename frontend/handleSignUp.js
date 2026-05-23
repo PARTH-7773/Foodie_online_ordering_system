@@ -11,24 +11,22 @@ const submitSignUp = document
       email: document.querySelector("#email").value,
       password: document.querySelector("#password").value,
       conformPassword: document.querySelector("#confirm_password").value,
+
     };
+    // if (data.password !== data.conformPassword) {
+    //   message.textContent = "Password are not Match.";
+    //   setTimeout(() => {
+    //     message.textContent = null;
+    //   }, 5000);
+    //   return;
+    // }
 
-    if (data.password !== data.conformPassword) {
-      message.textContent = "Password are not Match.";
-      setTimeout(() => {
-        message.textContent = null;
-      }, 5000);
-      return;
-    }
-
-    const respose = await fetch("http://localhost:3000/api/auth/signUp", {
+    const respose = await fetch("http://localhost:7773/api/auth/signUp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials:"include",
-      body: JSON.stringify(data),
+      body:JSON.stringify(data)
     });
     const result = await respose.json();
-    // console.log(result);
 
     if (result.success) {
       formWrapper.innerHTML = null;

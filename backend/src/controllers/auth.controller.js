@@ -1,15 +1,23 @@
 import config from "../config/ENV.config.js";
 import userModel from "../models/auth.model.js";
 import { GenerateAccessToken } from "../utils/util.js";
-
+import { validationResult } from "express-validator";
 /**
  * @route - POST api/auth/signUp
  * @description - User registration controller
  * @access public
  */
 export const signUp = async (req, res) => {
+  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+      data: null
+    });
+  }
   const { name, email, password, conformPassword } = req.body;
-
   if (!name || !email || !password || !conformPassword) {
     return res.status(400).json({
       success: false,
@@ -17,11 +25,18 @@ export const signUp = async (req, res) => {
       data: null,
     });
   }
+  if (password !== conformPassword) {
+      return res.status(400).json({
+        success:false,
+        message:"Password are not Match.",
+        data:null
+      })
+  }
   try {
 
     const userAlreadyExist = await userModel.findOne({ email });
     if (userAlreadyExist) {
-      return res.status(403).json({
+      return res.status(408).json({
         success: false,
         message: "User already have this email.",
         data: null,
@@ -65,6 +80,15 @@ export const signUp = async (req, res) => {
  */
 
 export const signIn = async (req, res) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: errors.array(),
+      data: null
+    });
+  }
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -99,8 +123,8 @@ export const signIn = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure:config.NODE_ENV,
-      sameSite:config.NODE_ENV ? 'none':"lax",
+      secure: config.NODE_ENV,
+      sameSite: config.NODE_ENV ? 'none' : "lax",
       maxAge: 10 * 60 * 1000 // 10m
     })
 
@@ -109,6 +133,7 @@ export const signIn = async (req, res) => {
       success: true,
       message: "SignIn success",
       data: {
+        _id:user._id,
         name: user.name,
         email: user.email,
         role: user.role,
