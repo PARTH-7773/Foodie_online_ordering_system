@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         payBtn.disabled = true;
 
         setTimeout(() => {
-            payButton.innerText = "Processing Payment...";
+            payBtn.innerText = "Processing Payment...";
             setTimeout(() => {
                 // 3. Create a Fake Transaction ID
                 const fakePaymentId =
