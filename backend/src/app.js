@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 import router from "./routes/auth.route.js";
 import productRouter from "./routes/product.route.js";
 import orderRouter from "./routes/orders.route.js";
+import connectDB from "./config/db.config.js";
+
+connectDB();
 
 const app = express();
 app.use(express.json());
