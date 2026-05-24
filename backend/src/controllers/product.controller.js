@@ -2,12 +2,30 @@ import productModel from "../models/product.model.js";
 
 export const getProduct = async (req, res) => {
 
-    const products = await productModel.find()
-    return res.status(200).json({
-        success: true,
-        message: "All product fetch succesull",
-        data: products
-    })
+    // const products = await productModel.find()
+    // return res.status(200).json({
+    //     success: true,
+    //     message: "All product fetch succesull",
+    //     data: products
+    // })
+
+    try {
+        const products = await productModel.find();
+        return res.status(200).json({
+            success: true,
+            message: "All product fetch successful",
+            data: products
+        });
+    } catch (error) {
+        console.log("Error fetching products:", error.message);
+        
+        // This stops Vercel from sending the HTML crash page!
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch products from the database",
+            error: error.message
+        });
+    }
 }
 
 export const createProduct = async (req, res) => {
