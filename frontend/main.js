@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // });
 
     const logout = async () => {
-        const response = await fetch("http://localhost:7773/api/auth/sign-out", {
+        const response = await fetch("https://foodiecom.vercel.app/api/auth/sign-out", {
             credentials: "include"
         }).then(res => res.json()).then((data) => {
             // console.log(data);
             if (data.success) {
                 localStorage.removeItem('foodieUser');
-                window.location.href = 'http://localhost:5500/frontend/index.html';
+                window.location.href = 'https://foodiecom.vercel.app/index.html';
             } else {
                 localStorage.removeItem('foodieUser');
-                window.location.href = 'http://localhost:5500/frontend/index.html';
+                window.location.href = 'https://foodiecom.vercel.app/index.html';
             }
         })
 
