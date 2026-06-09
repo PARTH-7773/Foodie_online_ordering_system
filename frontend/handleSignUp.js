@@ -25,9 +25,9 @@ const submitSignUp = document
       return;
     }
 
-    const respose = await fetch("http://localhost:7773/api/auth/signUp", {
+    const respose = await fetch("https://foodiecom.vercel.app/api/auth/signUp", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },    
       body:JSON.stringify(data)
     });
     const result = await respose.json();
