@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1500);
         }, 1500);
 
-        fetch("http://localhost:7773/api/order/place-order", {
+        fetch("https://foodiecom.vercel.app/api/order/place-order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
