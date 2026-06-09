@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const initApp = () => {
-        fetch("http://localhost:7773/api/product/get-all-products")
+        fetch("https://foodiecom.vercel.app/api/product/get-all-products")
             .then((response) => response.json())
             .then((data) => {
                 // console.log(data)
