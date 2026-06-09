@@ -1,0 +1,381 @@
+<!-- <?php
+include 'auth.php';
+include '../db.php';
+
+// 1. GET PRODUCT DETAILS
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $product = $stmt->get_result()->fetch_assoc();
+
+    if (!$product) {
+        header("Location: manage_products.php");
+        exit();
+    }
+} else {
+    header("Location: manage_products.php");
+    exit();
+}
+
+// 2. HANDLE UPDATE
+$msg = "";
+$error = "";
+
+if (isset($_POST['update_product'])) {
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $category = $_POST['category'];
+
+    // CHECK IMAGE UPDATE
+    if (!empty($_FILES['image']['name'])) {
+        $target_dir = "../uploads/";
+        $image_name = time() . "_" . basename($_FILES["image"]["name"]); // Unique name
+        $target_file = $target_dir . $image_name;
+        $db_image_path = "uploads/" . $image_name;
+
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+            $stmt = $conn->prepare("UPDATE products SET name=?, price=?, category=?, image=? WHERE id=?");
+            $stmt->bind_param("sdssi", $name, $price, $category, $db_image_path, $id);
+        } else {
+            $error = "Failed to upload image.";
+        }
+    } else {
+        // Update without changing image
+        $stmt = $conn->prepare("UPDATE products SET name=?, price=?, category=? WHERE id=?");
+        $stmt->bind_param("sdsi", $name, $price, $category, $id);
+    }
+
+    if (empty($error) && $stmt->execute()) {
+        // Refresh product data
+        $stmt_refresh = $conn->prepare("SELECT * FROM products WHERE id = ?");
+        $stmt_refresh->bind_param("i", $id);
+        $stmt_refresh->execute();
+        $product = $stmt_refresh->get_result()->fetch_assoc();
+        
+        $msg = "Product Updated Successfully!";
+    } else {
+        $error = "Database Error: Could not update.";
+    }
+}
+?> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* MODERN FORM STYLES */
+        .edit-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .edit-header h2 {
+            font-size: 1.8rem;
+            color: var(--lead);
+        }
+
+        .back-btn {
+            background: #f3f4f6;
+            color: var(--lead);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--gold-finger);
+            outline: none;
+        }
+
+        /* IMAGE PREVIEW AREA */
+        .image-preview-box {
+            text-align: center;
+            padding: 1rem;
+            border: 2px dashed #ddd;
+            border-radius: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .current-img {
+            width: 200px;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .msg {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            font-size:large; 
+        }
+
+        .button {
+            display: none;
+        }
+
+        @media(max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* .admin-sidebar{
+                display: none;
+            } */
+        }
+    </style>
+</head>
+
+<body class="admin-body">
+
+    <aside class="admin-sidebar">
+        <h3>Admin Panel</h3>
+        <ul>
+            <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="manage_products.html" class="active"><i class="fas fa-utensils"></i> Products</a></li>
+            <li><a href="manage_orders.php"><i class="fas fa-box"></i> Orders</a></li>
+            <li><a href="../" target="_blank"><i class="fas fa-globe"></i> View Site</a></li>
+        </ul>
+    </aside>
+
+    <main class="admin-main-content">
+
+        <div class="edit-container">
+            <div class="edit-header">
+                <h2>Edit Product</h2>
+                <a href="manage_products.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
+
+            <!-- <?php if($msg) echo "<div class='msg success'><i class='fas fa-check-circle'></i> $msg</div>"; ?> -->
+            <!-- <div class='msg error'><i class='fas fa-exclamation-circle'></i></div> -->
+
+            <form id="product-details" enctype="multipart/form-data">
+                <!-- <input type="hidden" name="id" value="<?php echo $product['id']; ?>"> -->
+
+                <div class="form-grid">
+                    <div class="left-col">
+                        <!-- <div class="input-group">
+                            <label>Product Name</label>
+                            <input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>"
+                                required>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1.5rem;">
+                            <label>Price (₹)</label>
+                            <input type="number" step="0.01" name="price"
+                                value="<?php echo htmlspecialchars($product['price']); ?>" required>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1.5rem;">
+                            <label>Category</label>
+                            <select name="category">
+                                <?php 
+                                $cats = ['Burger', 'Pizza', 'Chicken', 'Chinese', 'Indian', 'Drinks', 'Dessert'];
+                                foreach($cats as $cat) {
+                                    $selected = ($product['category'] == $cat) ? 'selected' : '';
+                                    echo "<option value='$cat' $selected>$cat</option>";
+                                }
+                                ?>
+                            </select>
+                        </div> -->
+                    </div>
+
+
+                    <div class="right-col">
+                        <!-- <div class="input-group">
+                            <label>Product Image</label>
+                            <div class="image-preview-box">
+                                <p style="font-size: 0.9rem; color: gray; margin-bottom: 10px;">Current Image</p>
+                                <img src="../<?php echo $product['image']; ?>" class="current-img">
+
+                                <input type="file" name="image" style="padding: 0.5rem; font-size: 0.9rem;">
+                                <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">Upload new to replace</p>
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+
+                <button id="update-btn" type="submit" name="update_product" class="btn "
+                    style="width: 100%; font-size: 1.1rem;">
+                    Update Product
+                </button>
+            </form>
+        </div>
+
+    </main>
+</body>
+
+<script>
+
+    const edit_container = document.querySelector(".edit-container");
+    const productDetails = document.querySelector("#product-details");
+    const leftCol = document.querySelector('.left-col')
+    const rigthCol = document.querySelector('.right-col')
+    const error = document.querySelector(".error")
+    const update_btn = document.querySelector("#update-btn");
+
+    const URLParam = new URLSearchParams(window.location.search);
+    const productID = URLParam.get('id');
+
+    const cats = ['Burger', 'Pizza', 'Chicken', 'Chinese', 'Indian', 'Drinks', 'Dessert'];
+
+    try {
+
+        const getProductDetails = async (productID) => {
+
+            response = await fetch(`http://localhost:7773/api/product/get-product/${productID}`)
+            const result = await response.json();
+
+            if (result.success && result.data !== null) {
+                showProductDetails(result.data);
+            }
+            else {
+                update_btn.classList.add("button")
+                let error = document.createElement('div')
+                error.classList.add("msg", "error");
+                error.innerHTML = `<i class='fas fa-exclamation-circle'></i> ${result.message}`
+                edit_container.appendChild(error)
+            }
+
+        }
+
+        getProductDetails(productID)
+    } catch (err) {
+        update_btn.classList.add("button")
+        let error = document.createElement('div')
+        error.classList.add("msg", "error");
+        error.innerHTML = `<i class='fas fa-exclamation-circle'>${result.message}</i>`
+        edit_container.appendChild(error)
+    }
+
+    function showProductDetails(product) {
+        // console.log(product);
+        leftCol.innerHTML = `
+                        <div class="input-group">
+                            <label>Product Name</label>
+                            <input type="text" name="name" value="${product.name}" required>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1.5rem;">
+                            <label>Price (₹)</label>
+                            <input type="number" step="0.01" name="price" value="${product.price}" required>
+                        </div>`;
+
+        const div = document.createElement("div");
+        div.classList.add("input-group");
+        div.id = 'category';
+        div.style.marginTop = "1.5rem";
+        div.innerHTML = `<label>Category</label>
+                        <select class='select-pro' name="category ">
+                            ${(
+                cats.map((c, idx) => {
+                    let selected = (product.category === c) ? 'selected' : ''
+                    // console.log(selected);
+                    return `<option value='${c}' ${selected}>${c}</option>`
+                })
+            )}    
+                        </select>`;
+        leftCol.appendChild(div)
+
+        rigthCol.innerHTML = `
+                        <div class="input-group">
+                            <label>Product Image</label>
+                            <div class="image-preview-box">
+                                <p style="font-size: 0.9rem; color: gray; margin-bottom: 10px;">Current Image</p>
+                                <img src="../${product.image}" class="current-img">
+                                
+                                <input type="file" name="image" style="padding: .6rem; font-size: 1rem;">
+                                <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">Upload new to replace</p>
+                            </div>
+                        </div>
+                    `;
+    }
+
+
+      productDetails.addEventListener("submit", (e)=>{
+        e.preventDefault();
+
+        const formData = new FormData(productDetails)
+        // console.log(formData);
+        // const name = formData.get('name');
+        // console.log(name);
+
+        const {name , price , category , image } = Object.fromEntries(formData);
+        console.log(name);
+      })
+
+
+</script>
+
+</html>
+
+<!-- 
+`<div id="category" class="input-group" style="margin-top: 1.5rem;">
+                            <label>Category</label>
+                            <select  name="category"> -->

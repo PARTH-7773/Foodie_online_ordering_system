@@ -28,7 +28,6 @@ document.getElementById("submit-form").addEventListener("submit", async (e) => {
 
         if (result.success) {
             setUserState()
-            console.log(getUserState())
             const user = {
                 name: result.data.name,
                 role: result.data.role,

@@ -13,13 +13,17 @@ const submitSignUp = document
       conformPassword: document.querySelector("#confirm_password").value,
 
     };
-    // if (data.password !== data.conformPassword) {
-    //   message.textContent = "Password are not Match.";
-    //   setTimeout(() => {
-    //     message.textContent = null;
-    //   }, 5000);
-    //   return;
-    // }
+    if (data.password !== data.conformPassword) {
+       showErrorMsg("Password are not Match.")
+    }
+
+    function showErrorMsg(msg){
+      message.textContent = msg;
+      setTimeout(() => {
+        message.textContent = null; 
+      }, 5000);
+      return;
+    }
 
     const respose = await fetch("http://localhost:7773/api/auth/signUp", {
       method: "POST",
@@ -41,5 +45,8 @@ const submitSignUp = document
         `;
 
       formWrapper.appendChild(div);
+    }else{
+      console.log(result.message);
+      showErrorMsg( typeof result.message === "object" ? result.message[0].msg : result.message)
     }
   });

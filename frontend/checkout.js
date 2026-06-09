@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector('#checkout-form');
 
     const cart = JSON.parse(localStorage.getItem("foodieCart")) || [];
-    console.log("cart", cart)
+    // console.log("cart", cart)
 
     const displayOrderSummary = () => {
         orderItemsList.innerHTML = '';
@@ -76,14 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((data) => {
                 console.log(data);
                 if (data.success) {
+                    localStorage.removeItem("foodieCart");
                     Swal.fire({
                         title: "Order Place",
                         text: 'Your food is on the way',
                         icon: "success",
                         confirmButtonColor: "#ff9800"
                     }).then(() => {
-                        localStorage.removeItem("foodieCart");
-                        window.location.href = "my-orders.html"
+                        window.location.href = "my_orders.html"
                     })
                 } else {
                     // Backend error 

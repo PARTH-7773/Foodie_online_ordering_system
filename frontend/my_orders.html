@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>My Orders - Food Delivery</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
     <style>
         .orders-container {
             max-width: 1000px;
@@ -54,6 +54,16 @@
             font-weight: bold;
             text-align: right;
         }
+
+        .hr-line {
+            border: 0;
+            border-top: 1px dashed #ddd;
+            margin: 10px 0;
+        }
+
+        .order-item-middle {
+            float: right;
+        }
     </style>
 </head>
 
@@ -63,7 +73,7 @@
         <nav class="navbar flex between wrapper">
             <a href="index.php" class="logo">Foodie.</a>
             <div class="desktop-action flex gap-2">
-                <span style="align-self: center;">Hi, <?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                <span style="align-self: center;">Hi,Put login user name </span>
                 <a href="index.html" class="btn">Home</a>
                 <a href="logout.php" class="btn">Logout</a>
             </div>
@@ -72,55 +82,61 @@
 
     <main class="wrapper p-top">
         <div class="orders-container">
-            <h2 style="margin-bottom: 2rem;">My Order History</h2>
+            <h3 style="margin-bottom: 2rem;">My Order History</h3>
 
-            <?php if ($result->num_rows > 0): ?>
-                <?php while ($order = $result->fetch_assoc()): ?>
-                    <div class="order-card">
-                        <div class="order-header">
-                            <div>
-                                <strong>Order #<?php echo $order['id']; ?></strong><br>
-                                <small style="color: gray;"><?php echo $order['order_date']; ?></small>
-                            </div>
-                            <div>
-                                <span class="order-status">Received</span>
-                            </div>
-                        </div>
+            <!-- <?php if ($result->num_rows > 0): ?>
+            <?php while ($order = $result->fetch_assoc()): ?> -->
+            <!-- <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <strong>Order #
+                            <?php echo $order['id']; ?>
+                        </strong><br>
+                        <small style="color: gray;">
+                            <?php echo $order['order_date']; ?>
+                        </small>
+                    </div>
+                    <div>
+                        <span class="order-status">Received</span>
+                    </div>
+                </div>
 
-                        <div class="order-items">
-                            <ul>
-                                <?php
+                <div class="order-items">
+                    <ul>
+                        <?php
                                 // Fetch items for this order
                                 $oid = $order['id'];
                                 $item_sql = "SELECT p.name, oi.quantity, oi.price FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = $oid";
                                 $item_res = $conn->query($item_sql);
                                 while ($item = $item_res->fetch_assoc()):
                                 ?>
-                                    <li>
-                                        <?php echo $item['quantity']; ?>x <?php echo $item['name']; ?>
-                                        <span style="float:right;">₹<?php echo $item['price']; ?></span>
-                                    </li>
-                                <?php endwhile; ?>
-                            </ul>
-                        </div>
-
-                        <hr style="border: 0; border-top: 1px dashed #ddd; margin: 10px 0;">
-                        <div class="total-price">
-                            Total: ₹<?php echo number_format($order['total_amount'], 2); ?>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <div class="text-center">
-                    <h3>No orders found.</h3>
-                    <p>Go ahead and order some delicious food!</p>
-                    <br>
-                    <a href="index.html" class="btn">View Menu</a>
+                        <li>
+                            <?php echo $item['quantity']; ?>x
+                            <?php echo $item['name']; ?>
+                            <span style="float:right;">₹
+                                <?php echo $item['price']; ?>
+                            </span>
+                        </li>
+                        <?php endwhile; ?>
+                    </ul>
                 </div>
-            <?php endif; ?>
+
+                <hr style="border: 0; border-top: 1px dashed #ddd; margin: 10px 0;">
+                <div class="total-price">
+                    Total: ₹
+                    <?php echo number_format($order['total_amount'], 2); ?>
+                </div>
+            </div> -->
+            <!-- <div class="text-center">
+                <h3>No orders found.</h3>
+                <p>Go ahead and order some delicious food!</p>
+                <br>
+                <a href="index.html" class="btn">View Menu</a>
+            </div> -->
         </div>
     </main>
 
 </body>
+<script src="assets/scripts/my-order.js"></script>
 
 </html>

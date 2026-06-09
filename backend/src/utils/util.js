@@ -8,7 +8,7 @@ export const GenerateAccessToken = async (_id, role) => {
       role: role,
     },
     config.JWT_SECRET,
-    { expiresIn: "10m" },
+    { expiresIn: "1h" },
   );
   
   return Accesstoken;
