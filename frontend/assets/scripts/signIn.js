@@ -11,7 +11,7 @@ document.getElementById("submit-form").addEventListener("submit", async (e) => {
         password: document.querySelector('.password').value
     };
     try {
-        const response = await fetch('http://localhost:7773/api/auth/signIn', {
+        const response = await fetch('https://foodiecom.vercel.app/api/auth/signIn', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -35,7 +35,7 @@ document.getElementById("submit-form").addEventListener("submit", async (e) => {
                 state: getUserState(),
             }
             localStorage.setItem("foodieUser", JSON.stringify(user));
-            window.location.href = 'http://localhost:5500/frontend/index.html';
+            window.location.href = 'https://foodiecom.vercel.app/index.html';
         }
     } catch (error) {
         console.log(error)
