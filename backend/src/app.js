@@ -10,7 +10,7 @@ import orderRouter from "./routes/orders.route.js";
 import connectDB from "./config/db.config.js";
 import adminRouter from "./routes/admin.route.js";
 
-
+connectDB();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -27,7 +27,7 @@ app.use(
   }),
 );
 
-connectDB();
+
 
 // Users
 app.use("/api/auth", router);
