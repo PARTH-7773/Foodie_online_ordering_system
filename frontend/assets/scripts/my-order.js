@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getOrders = async () => {
         try {
-            const response = await fetch('http://localhost:7773/api/order/my-orders', {
+            const response = await fetch('https://foodiecom.vercel.app/api/order/my-orders', {
                 credentials: "include"
             }).then(async res => {
                 let data = await res.json()
