@@ -10,7 +10,7 @@ router.get("/test", (req, res) => {
 })
 router.post("/signUp", [
     body("name").notEmpty().withMessage("Name is required"),
-    body("email").trim().isEmail().withMessage("Valid email is required"),
+    body("email").trim().isEmail().withMessage("Invalid email"),
     body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long").notEmpty().withMessage("Password is required"),
 ],
     signUp);

@@ -13,7 +13,7 @@ async function placeOrder(req, res) {
         });
     }
     const { name, address, phone, cart } = req.body
-    if (!name || !address || !phone || cart) {
+    if (!name || !address || !phone || !cart) {
         return res.status(400).json({ message: "All fields are required" });
     }
     if (cart.length === 0) {
@@ -34,15 +34,8 @@ async function placeOrder(req, res) {
 }
 
 async function get_my_orders(req, res) {
-    // const orders = await orderModel.find({user_id:req.user._id}).populate('user_id', "name");
-    // console.log(req.user);
-    // console.log(orders);
-    // res.status(200).json({
-    //     orders
-    // })
-
     const user_id = new mongoose.Types.ObjectId(req.user._id);
-    const userorders = await orderModel.aggregate([{
+    const userOrders = await orderModel.aggregate([{
         // step:1 - $match
         $match: { user_id: user_id }
     }, {
@@ -52,8 +45,25 @@ async function get_my_orders(req, res) {
             from: "order_items",
             localField: "_id",
             foreignField: "orderId",
-            as: "Orders"
-        }
+            as: "Orders",
+
+            // pipeline below runs ON the order_items we just found
+            pipeline: [
+                {
+                    // Go into products collection and match the ID
+                    $lookup: {
+                        from: "products",
+                        localField: "productId",
+                        foreignField: "_id",
+                        as: "productDetails"
+                    }
+                }, {
+                    // $unwind changes the "product-details" field from an array to a single object
+                    $unwind: "$productDetails"
+                }
+            ]
+        },
+
     }, {
         /** step:3 - $sort
          * put the newest order on top
@@ -61,11 +71,24 @@ async function get_my_orders(req, res) {
         $sort: { createdAt: -1 }
     }]);
 
-    res.status(200).json({
+    console.log(userOrders.length);
+    
+    if (userOrders.length > 0) {
+        return res.status(200).json({
+            success: true,
+            message: "Order fetch success",
+            data: userOrders
+        });
+    }
+
+    return res.status(200).json({
         success: true,
-        message: "Order fetch success",
-        data: userorders
+        message: "No Orders found.",
+        data: null
     })
+
+
+
 }
 
 export default { placeOrder, get_my_orders }

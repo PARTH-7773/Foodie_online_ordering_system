@@ -8,7 +8,7 @@ import { validationResult } from "express-validator";
  * @access public
  */
 export const signUp = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -123,9 +123,10 @@ export const signIn = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: config.NODE_ENV,
-      sameSite: config.NODE_ENV ? 'none' : "lax",
-      maxAge: 10 * 60 * 1000 // 10m
+      secure: true,
+      sameSite:"strict",
+      // sameSite: config.NODE_ENV ? 'none' : "lax",
+      maxAge: 60 * 60 * 1000 // 10m
     })
 
 

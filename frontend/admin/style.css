@@ -1,0 +1,194 @@
+:root {
+  --primary: #f2bd12; /* Gold */
+  --sidebar-bg: #1e293b; /* Default Sidebar (Dark Blue) */
+  --bg-color: #f3f4f6; /* Light Gray Background */
+  --card-bg: #ffffff; /* White Cards */
+  --text-main: #334155; /* Dark Gray Text */
+  --text-light: #64748b; /* Light Gray Text */
+  --border-color: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+/* DARK MODE - HIGH CONTRAST FIX */
+body.dark-mode {
+  --primary: #fbbf24; /* Brighter Gold for Dark Mode */
+  --sidebar-bg: #0f172a; /* Very Dark (Almost Black) Sidebar */
+  --bg-color: #1e293b; /* Dark Blue-Gray Background */
+  --card-bg: #334155; /* Lighter Gray for Cards to pop */
+  --text-main: #f1f5f9; /* White Text */
+  --text-light: #cbd5e1; /* Soft White Text */
+  --border-color: #475569;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+/* 3. MAIN CONTENT AREA */
+/* ADMIN PANEL STYLES */
+.admin-body {
+  display: flex;
+  background-color: #f8f9fa;
+}
+
+.admin-sidebar {
+  width: 250px;
+  background: var(--lead);
+  color: var(--pure-white);
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.admin-sidebar h3 {
+  text-align: center;
+  color: var(--gold-finger);
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  padding-top: 20px;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-sidebar ul li a {
+  display: block;
+  color: var(--pure-white);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.admin-sidebar ul li a:hover,
+.admin-sidebar ul li a.active {
+  background: var(--gold-finger);
+  color: var(--lead);
+}
+
+.admin-main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--pure-white);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eee;
+}
+
+.stat-card h3 {
+  font-size: 1rem;
+  color: gray;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--lead);
+}
+.admin-main-content .left {
+  margin-left: 90%;
+  margin-bottom: 1rem;
+}
+
+/* 5. STATS CARDS (The Top Row) */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  background: rgba(242, 189, 18, 0.15);
+  color: var(--primary);
+}
+
+.stat-info h3 {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 0.2rem;
+}
+.stat-info p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 6. CHARTS GRID (The Bottom Row) */
+.charts-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Line chart takes 2/3 space */
+  gap: 1.5rem;
+}
+
+.chart-card {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  height: 400px; /* Fixed height for consistency */
+}
+
+.chart-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: var(--text-main);
+}
+
+/* Responsive Mobile */
+@media (max-width: 992px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+  .admin-sidebar {
+    width: 70px;
+    padding: 1rem 0.5rem;
+  }
+  .admin-sidebar h3,
+  .admin-sidebar span {
+    display: none;
+  }
+  .admin-sidebar ul li a {
+    justify-content: center;
+  }
+  .admin-main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+}

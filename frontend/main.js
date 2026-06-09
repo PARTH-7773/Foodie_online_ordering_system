@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch("http://localhost:7773/api/auth/sign-out", {
             credentials: "include"
         }).then(res => res.json()).then((data) => {
-            console.log(data);
+            // console.log(data);
             if (data.success) {
                 localStorage.removeItem('foodieUser');
                 window.location.href = 'http://localhost:5500/frontend/index.html';
@@ -47,12 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (UserState) {
         if (UserState.state) {
             desktopAction.removeChild(stateBtn)
-            // stateBtn.textContent = "Sign Out"
-            // stateBtn.href = ""
             let div = document.createElement('div');
             div.classList.add('user-dropdown')
             div.innerHTML = `
                     <button class="btn dropdown-btn">
+                        ${UserState.name + '...'}
                         <i class="fa-solid fa-user"></i>
                         <i class="fa-solid fa-caret-down"></i>
                     </button>
@@ -193,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.changeQuantity = (productId, change) => {
         // console.log(productId)
         const itemIndex = cart.findIndex((item) => item._id == productId);
-        console.log(itemIndex)
+        // console.log(itemIndex)
         if (cart[itemIndex].quantity === 1 && change === -1) {
             cart.splice(itemIndex, 1);
         } else {
